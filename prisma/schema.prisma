@@ -1,0 +1,335 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum CreditRole {
+  ACTING
+  CAMERA
+  CREATED
+  DIRECTING
+  EDITING
+  PRODUCTION
+  WRITING
+}
+
+enum CreditScope {
+  EPISODE
+  MOVIE
+  SEASON
+  SHOW
+}
+
+enum MediaType {
+  MOVIE
+  SHOW
+}
+
+model User {
+  id            String   @id @default(cuid())
+  bio           String?
+  email         String   @unique
+  emailVerified Boolean  @default(false)
+  imageUrl      String?
+  name          String?
+  slug          String   @unique
+  username      String   @unique
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  accounts    Account[]
+  collections Collection[]
+  media       UserMedia[]
+  sessions    Session[]
+  watchlist   Watchlist[]
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  expiresAt DateTime
+  ipAddress String?
+  token     String
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  accessToken           String?
+  accessTokenExpiresAt  DateTime?
+  accountId             String
+  idToken               String?
+  password              String?
+  providerId            String
+  refreshToken          String?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  expiresAt  DateTime
+  identifier String
+  value      String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+model Person {
+  id        String    @id @default(cuid())
+  bio       String?
+  birthday  DateTime?
+  deathday  DateTime?
+  imagePath String?
+  name      String
+  slug      String    @unique
+  tmdbId    Int?      @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  credits Credit[]
+
+  @@index([name])
+  @@index([slug])
+  @@map("persons")
+}
+
+model Media {
+  id           String    @id @default(cuid())
+  backdropPath String?
+  overview     String?
+  posterPath   String?
+  releaseDate  DateTime?
+  slug         String    @unique
+  sortTitle    String?
+  title        String
+  tmdbId       Int?      @unique
+  type         MediaType
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  movieDetails MovieDetails?
+  showDetails  ShowDetails?
+
+  collections CollectionMedia[]
+  credits     Credit[]
+  genres      MediaGenre[]
+  users       UserMedia[]
+  watchlist   Watchlist[]
+
+  @@index([releaseDate])
+  @@index([slug])
+  @@index([title])
+  @@index([type])
+  @@map("media")
+}
+
+model MovieDetails {
+  mediaId String  @id
+  budget  Int?
+  revenue Int?
+  runtime Int?
+  tagline String?
+
+  media Media @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+
+  @@map("movie_details")
+}
+
+model ShowDetails {
+  mediaId          String  @id
+  homepageUrl      String?
+  network          String?
+  numberOfEpisodes Int?
+  numberOfSeasons  Int?
+  status           String?
+
+  media   Media    @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+  seasons Season[]
+
+  @@map("show_details")
+}
+
+model Season {
+  id           String    @id @default(cuid())
+  airDate      DateTime?
+  backdropPath String?
+  overview     String?
+  posterPath   String?
+  seasonNumber Int       @unique
+  slug         String    @unique
+  tmdbId       Int?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  showDetailsId String      @unique
+  showDetails   ShowDetails @relation(fields: [showDetailsId], references: [mediaId], onDelete: Cascade)
+
+  episodes Episode[]
+  credits  Credit[]
+
+  @@index([showDetailsId, seasonNumber])
+  @@index([slug])
+  @@map("seasons")
+}
+
+model Episode {
+  id            String    @id @default(cuid())
+  airDate       DateTime?
+  episodeNumber Int       @unique
+  overview      String?
+  runtime       Int?
+  slug          String    @unique
+  stillPath     String?
+  title         String?
+  tmdbId        Int?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  seasonId String @unique
+  season   Season @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+
+  credits Credit[]
+
+  @@index([seasonId, episodeNumber])
+  @@index([slug])
+  @@map("episodes")
+}
+
+model Credit {
+  id        String      @id @default(cuid())
+  character String?
+  job       String?
+  order     Int?
+  role      CreditRole
+  scope     CreditScope
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  episodeId String?
+  episode   Episode? @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+
+  mediaId String?
+  media   Media?  @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+
+  personId String
+  person   Person @relation(fields: [personId], references: [id], onDelete: Cascade)
+
+  seasonId String?
+  season   Season? @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+
+  @@index([mediaId])
+  @@index([personId])
+  @@index([scope])
+  @@map("credits")
+}
+
+model UserMedia {
+  id        String   @id @default(cuid())
+  mediaId   String   @unique
+  userId    String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  media Media @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("user_media")
+}
+
+model Genre {
+  id   String @id @default(cuid())
+  name String @unique
+
+  media MediaGenre[]
+
+  @@index([name])
+  @@map("genres")
+}
+
+model MediaGenre {
+  id      String @id @default(cuid())
+  genreId String @unique
+  mediaId String @unique
+
+  genre Genre @relation(fields: [genreId], references: [id], onDelete: Cascade)
+  media Media @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+
+  @@index([genreId])
+  @@map("media_genres")
+}
+
+model Collection {
+  id          String   @id @default(cuid())
+  description String?
+  isPublic    Boolean  @default(true)
+  name        String
+  slug        String   @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  media CollectionMedia[]
+
+  @@index([userId])
+  @@index([userId, isPublic])
+  @@map("collections")
+}
+
+model CollectionMedia {
+  id           String   @id @default(cuid())
+  collectionId String   @unique
+  mediaId      String   @unique
+  order        Int? // For custom ordering within collection
+  addedAt      DateTime @default(now())
+
+  collection Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  media      Media      @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+
+  @@index([collectionId, order])
+  @@map("collection_media")
+}
+
+model Watchlist {
+  id        String   @id @default(cuid())
+  mediaId   String
+  userId    String
+  addedAt   DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  media Media @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, mediaId])
+  @@index([userId])
+  @@index([mediaId])
+  @@map("watchlist")
+}
