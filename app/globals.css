@@ -38,8 +38,8 @@
     --shadow-dark-100: 0px 2px 10px 0px rgba(46, 52, 56, 0.1);
     --shadow-dark-200: 2px 0px 20px 0px rgba(39, 36, 36, 0.04);
 
-    /*--background-image-auth-dark: url("/images/auth-dark.png");*/
-    /*--background-image-auth-light: url("/images/auth-light.png");*/
+    --background-image-main: url("/images/background.webp");
+    --background-image-auth: url("/images/auth_background.webp");
     --breakpoint-xs: 420px;
 
     --font-sans: var(--font-geist-sans);
@@ -255,7 +255,7 @@
 }
 
 @utility primary-gradient {
-    background: linear-gradient(129deg, #d22b2b 0%, #fa8072 100%);
+    background: linear-gradient(129deg, #d22b2b 50%, #fa8072 100%);
 }
 
 @utility dark-gradient {
