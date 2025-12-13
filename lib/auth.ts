@@ -1,4 +1,5 @@
 import { hashPassword, verifyPassword } from '@/lib/argon2';
+import { sendEmail } from '@/lib/email';
 import prisma from '@/lib/prisma';
 import { normalizeName } from '@/lib/utils';
 import { betterAuth } from 'better-auth';
@@ -34,9 +35,22 @@ export const auth = betterAuth({
   },
   emailAndPassword: {
     enabled: true,
+    autoSignIn: false,
     password: {
       hash: hashPassword,
       verify: verifyPassword,
+    },
+  },
+  emailVerification: {
+    sendOnSignUp: true,
+    autoSignInAfterVerification: true,
+    async sendVerificationEmail({user, url}) {
+      await sendEmail({
+        to: user.email,
+        subject: "Verify your email address",
+        name: user.name,
+        url,
+      })
     },
   },
   hooks: {
@@ -58,6 +72,14 @@ export const auth = betterAuth({
       }
     })
   },
+  user: {
+    additionalFields: {
+      username: {
+        type: "string",
+        input: true,
+      },
+    },
+  },
   plugins: [username({
     validationOrder: {
       username: "post-normalization",
@@ -68,3 +90,6 @@ export const auth = betterAuth({
     }
   }), nextCookies()],
 });
+
+export type Session = typeof auth.$Infer.Session;
+export type User = typeof auth.$Infer.Session.user;
