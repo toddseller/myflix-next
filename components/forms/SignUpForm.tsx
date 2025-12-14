@@ -15,14 +15,14 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
-type SignUpValues = z.infer<typeof SignUpSchema>;
+type SignUpFormProps = z.infer<typeof SignUpSchema>;
 
 const SignUpForm = () => {
   const [error, setError] = useState<string | null>(null);
 
   const router = useRouter();
 
-  const form = useForm<SignUpValues>({
+  const form = useForm<SignUpFormProps>({
     resolver: standardSchemaResolver(SignUpSchema),
     defaultValues: {
       email: '',
@@ -33,21 +33,23 @@ const SignUpForm = () => {
     },
   });
 
-  async function onSubmit({ email, password, name, username }: SignUpValues) {
+  async function onSubmit(data: SignUpFormProps) {
     setError(null);
 
-    const { error } = await authClient.signUp.email({
-      email,
-      name,
-      password,
-      username,
+    const res = await authClient.signUp.email({
+      ...data, callbackURL: ROUTES.HOME,
+    }, {
+      onError: (error) => {
+        setError(error.error.message || 'Something went wrong');
+      },
+      onSuccess: () => {
+        toast.success('Signed up successfully');
+      }
     });
 
-    if (error) {
-      setError(error.message || 'Something went wrong');
-    } else {
-      toast.success('Signed up successfully');
-      router.push(ROUTES.HOME);
+    if (res.error === null && !res.data.user.emailVerified) {
+      const encodedEmail = btoa(res.data.user.email);
+      router.push(ROUTES.VERIFY_EMAIL(encodedEmail));
     }
   }
 

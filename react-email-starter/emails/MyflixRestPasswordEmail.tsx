@@ -3,17 +3,17 @@ import {
 } from '@react-email/components';
 import * as React from 'react';
 
-interface MyflixVerifyPasswordEmailProps {
+interface MyflixRestPasswordEmailProps {
   name: string;
   url: string;
 }
 
 const baseUrl = "https://cdn.myflix.stream/images";
 
-export const MyflixVerifyPasswordEmail = ({
+export const MyflixRestPasswordEmail = ({
                                            name,
                                            url,
-                                         }: MyflixVerifyPasswordEmailProps) => {
+                                         }: MyflixRestPasswordEmailProps) => {
   const firstName = name.trim().split(' ')[0];
   const currentYear = new Date().getFullYear();
 
@@ -22,7 +22,7 @@ export const MyflixVerifyPasswordEmail = ({
       <Head />
       <Tailwind>
         <Body className="bg-[#efeef1]" style={{ fontFamily: 'HelveticaNeue,Helvetica,Arial,sans-serif' }}>
-          <Preview>Welcome to MYFLIX! Let's verify your email and get you started curating your personal media database!</Preview>
+          <Preview>{firstName}, someone, hopefully you, just requested to reset your MYFLIX password!</Preview>
           <Container className="max-w-[580px] my-[30px] mx-auto bg-white">
             <Section className="p-[30px]">
               <Img
@@ -40,22 +40,20 @@ export const MyflixVerifyPasswordEmail = ({
               </Row>
             </Section>
             <Section className="pt-[5px] px-5 pb-[10px]">
-              <Text className="text-[14px] leading-[1.5]">Hello{' '}{firstName}.</Text>
               <Text className="text-[14px] leading-[1.5]">
-                My name is Inigo Montoya. You killed my father. Prepare to die!
+                MYFLIX - <span className='italic'>What's the password?</span><br/>
+                {firstName} - <span className='italic'>What?</span><br/>
+                MYFLIX - <span className='italic'>Nope.</span><br/>
+                {firstName} - <span className='italic'>Open this door.</span><br/>
+                MYFLIX - <span className='italic'>Not even close.</span>
               </Text>
               <Text className="text-[14px] leading-[1.5]">
-                We're just joking! We just love movies and TV shows so much, we couldn't resist.
-              </Text>
-              <Text className="text-[14px] leading-[1.5]">
-                Welcome to MYFLIX! We're excited to have you on board and can't wait to explore your new library.
-                But first, let's finish verifying your email address.
-              </Text>
+                Hey {firstName}, someone just requested a password reset for your MYFLIX account. Hopefully it was you! If it wasn't, you can safely ignore this email. If it was you, trust us we understand, just click the Reset Password button.</Text>
               <Button
                 className="box-border w-full rounded-[8px] bg-red-600 px-[12px] py-[12px] text-center font-semibold text-white"
                 href={url}
               >
-                Verify your email address
+                Reset Password
               </Button>
               <Text className="text-[14px] leading-[1.5]">
                 Thanks,
@@ -79,9 +77,9 @@ export const MyflixVerifyPasswordEmail = ({
   );
 };
 
-MyflixVerifyPasswordEmail.PreviewProps = {
+MyflixRestPasswordEmail.PreviewProps = {
   name: 'Todd Seller',
   url: 'https://myflix.stream/reset-password?token=',
-} as MyflixVerifyPasswordEmailProps;
+} as MyflixRestPasswordEmailProps;
 
-export default MyflixVerifyPasswordEmail;
+export default MyflixRestPasswordEmail;

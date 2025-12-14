@@ -49,6 +49,9 @@ const SignInForm = () => {
     setLoading(false);
 
     if (error) {
+      if (error.code === 'EMAIL_NOT_VERIFIED') {
+        router.push(ROUTES.VERIFY_EMAIL(btoa(email)));
+      }
       setError(error.message || 'Something went wrong');
     } else {
       toast.success('Signed in successfully');

@@ -1,5 +1,5 @@
 import { hashPassword, verifyPassword } from '@/lib/argon2';
-import { sendEmail } from '@/lib/email';
+import { sendResetPasswordEmail, sendVerifyPasswordEmail } from '@/lib/email';
 import prisma from '@/lib/prisma';
 import { normalizeName } from '@/lib/utils';
 import { betterAuth } from 'better-auth';
@@ -35,22 +35,20 @@ export const auth = betterAuth({
   },
   emailAndPassword: {
     enabled: true,
-    autoSignIn: false,
+    requireEmailVerification: true,
     password: {
       hash: hashPassword,
       verify: verifyPassword,
     },
+    sendResetPassword: async ({ user, url }) => {
+      await sendResetPasswordEmail({ user, url })
+    }
   },
   emailVerification: {
     sendOnSignUp: true,
     autoSignInAfterVerification: true,
     async sendVerificationEmail({user, url}) {
-      await sendEmail({
-        to: user.email,
-        subject: "Verify your email address",
-        name: user.name,
-        url,
-      })
+      await sendVerifyPasswordEmail({ user, url })
     },
   },
   hooks: {
