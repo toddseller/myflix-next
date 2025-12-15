@@ -40,7 +40,7 @@ const SignInForm = () => {
     setError(null);
     setLoading(true);
 
-    const { error } = await authClient.signIn.email({
+    const { error, data } = await authClient.signIn.email({
       email,
       password,
       rememberMe,
@@ -54,8 +54,10 @@ const SignInForm = () => {
       }
       setError(error.message || 'Something went wrong');
     } else {
+      const id = data.user?.username ? data.user.username : data.user.id;
+      console.log('Sign in data: ', data);
       toast.success('Signed in successfully');
-      router.push(redirect ?? ROUTES.HOME);
+      router.push(redirect ?? ROUTES.PROFILE(id));
     }
   }
 

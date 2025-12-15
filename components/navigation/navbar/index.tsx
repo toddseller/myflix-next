@@ -1,11 +1,15 @@
 import Theme from '@/components/navigation/navbar/Theme';
+import ROUTES from '@/constants/routes';
+import { getServerSession } from '@/lib/get-session';
 import Image from 'next/image';
 import Link from 'next/link';
 
-const Navbar = () => {
+const Navbar = async () => {
+  const session = await getServerSession();
+  const id = session?.user.username ? session.user.username : session?.user.id;
   return (
     <nav className='flex-between background-light900_dark200 fixed z-50 w-full p-6 dark:shadow-none sm:px-12 shadow-light-300 gap-5'>
-      <Link href='/' className='flex items-center gap-1'>
+      <Link href={ROUTES.PROFILE(id)} className='flex items-center gap-1'>
         <Image
           src='/images/logo_red.svg'
           alt='MYFLIX Logo'

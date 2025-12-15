@@ -37,7 +37,7 @@ const SignUpForm = () => {
     setError(null);
 
     const res = await authClient.signUp.email({
-      ...data, callbackURL: ROUTES.HOME,
+      ...data, callbackURL: ROUTES.PROFILE(data.username),
     }, {
       onError: (error) => {
         setError(error.error.message || 'Something went wrong');

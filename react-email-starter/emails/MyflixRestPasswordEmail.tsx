@@ -40,12 +40,40 @@ export const MyflixRestPasswordEmail = ({
               </Row>
             </Section>
             <Section className="pt-[5px] px-5 pb-[10px]">
-              <Text className="text-[14px] leading-[1.5]">
-                MYFLIX - <span className='italic'>What's the password?</span><br/>
-                {firstName} - <span className='italic'>What?</span><br/>
-                MYFLIX - <span className='italic'>Nope.</span><br/>
-                {firstName} - <span className='italic'>Open this door.</span><br/>
-                MYFLIX - <span className='italic'>Not even close.</span>
+              <Text className="text-[14px] font-semibold">INT. CORRIDOR OUTSIDE RAPUNZEL’S TOWER – NIGHT</Text>
+              <Text className="text-[12px] leading-[1.25] italic mt-[-10px]">The narrow stone corridor outside the tower door is dimly lit by torches. The atmosphere is tense, echoing with distant footsteps and muffled alarms. {firstName}, CAPTAIN OF THE GUARD, stands before the tower door with two GUARDS flanking him.</Text>
+              <Text className="text-[12px] leading-[1.5] mt-[-10px]">
+                <span className='font-semibold'>{firstName.toUpperCase()}</span><br/>
+                What's this? Open up!
+                </Text>
+              <Text className="text-[12px] leading-[1.5] italic mt-[-10px]">
+                From behind the heavy wooden door, a small, unseen figure answers with mock authority.
+              </Text>
+              <Text className="text-[12px] leading-[1.5] mt-[-10px]">
+                <span className='font-semibold'>MYFLIX (O.S.)</span><br/>
+                What's the password?
+              </Text>
+              <Text className="text-[12px] leading-[1.5] italic mt-[-10px]">
+                <span className='italic'>{firstName} blinks, caught off guard.</span>
+              </Text>
+              <Text className="text-[12px] leading-[1.5]  mt-[-10px]">
+                <span className='font-semibold'>{firstName.toUpperCase()}</span><br/>
+                What?
+              </Text>
+              <Text className="text-[12px] leading-[1.5] mt-[-10px]">
+                <span className='font-semibold'>MYFLIX (O.S.)</span><br/>
+                Nope.
+              </Text>
+              <Text className="text-[12px] leading-[1.5] italic mt-[-10px]">
+                <span className='italic'>{firstName} steps closer, irritation rising.</span>
+              </Text>
+              <Text className="text-[12px] leading-[1.5] mt-[-10px]">
+                <span className='font-semibold'>{firstName.toUpperCase()}</span><br/>
+                Open this door!
+              </Text>
+              <Text className="text-[12px] leading-[1.5] mt-[-10px]">
+                <span className='font-semibold'>MYFLIX (O.S.)</span><br/>
+                Not even close!<br/>
               </Text>
               <Text className="text-[14px] leading-[1.5]">
                 Hey {firstName}, someone just requested a password reset for your MYFLIX account. Hopefully it was you! If it wasn't, you can safely ignore this email. If it was you, trust us we understand, just click the Reset Password button.</Text>
