@@ -1,12 +1,11 @@
 "use client";
 
-import { SheetClose } from "@/components/ui/sheet";
-import { sidebarLinks } from "@/constants";
-import { cn } from "@/lib/utils";
-import Image from "next/image";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Fragment } from "react";
+import { sidebarLinks } from '@/constants';
+import { cn } from '@/lib/utils';
+import Image from 'next/image';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { Fragment } from 'react';
 
 const NavLinks = ({ isMobileNav = false, username }: { isMobileNav?: boolean; username?: string }) => {
   const pathname = usePathname();
@@ -27,7 +26,7 @@ const NavLinks = ({ isMobileNav = false, username }: { isMobileNav?: boolean; us
             key={item.label}
             className={cn(
               isActive ? "text-primary-500 border-l-2 border-primary-500" : "text-dark300_light900",
-              "flex items-center justify-start gap-4 bg-transparent p-4 pl-11"
+              "flex items-center justify-start gap-4 bg-transparent p-1 pl-11"
             )}
           >
             <Image

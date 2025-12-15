@@ -11,8 +11,10 @@ const SignIn = () => {
   const router = useRouter();
   useEffect(() => {
     authClient.getSession().then(session => {
-      console.log('Session: ', session.data)
-      if (session.data != null) router.push(ROUTES.HOME)
+      if (session.data != null) {
+        const id = session.data.user.username ? session.data.user.username : session.data.user.id;
+        router.push(ROUTES.PROFILE(id))
+      }
     })
   }, [router])
 

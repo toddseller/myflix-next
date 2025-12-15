@@ -18,7 +18,7 @@ export async function sendVerifyPasswordEmail({ user, url }: SendEmailProps) {
   const text = toPlainText(html);
   await resend.emails.send({
     from: 'MYFLIX <noreply@myflix.stream>',
-    to: user.email,
+    to: `${user.name} <${user.email}>`,
     subject: 'Verify your email address',
     html,
     text,

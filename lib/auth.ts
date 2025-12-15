@@ -53,11 +53,8 @@ export const auth = betterAuth({
   },
   hooks: {
     before: createAuthMiddleware(async (ctx) => {
-      console.log('Path: ',ctx.path)
-      console.log('Body: ',ctx.body)
       if (ctx.path === "/sign-up/email") {
         const name = normalizeName(ctx.body.name);
-        console.log(`Updated Body: ${JSON.stringify({ ...ctx.body, name}, null, 2)}`)
         return {
           context: {
             ...ctx,
